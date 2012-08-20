@@ -235,7 +235,7 @@ abstract class Action {
                 case '_get':      $input =& $_GET;break;
                 case '_post':$input =& $_POST;break;
                 case '_put': parse_str(file_get_contents('php://input'), $input);break;
-                case '_param':  
+                case '_param':
                     switch($_SERVER['REQUEST_METHOD']) {
                         case 'POST':
                             $input    =  $_POST;
@@ -268,7 +268,11 @@ abstract class Action {
                     $filters    =   explode(',',$filters);
                     foreach($filters as $filter){
                         if(function_exists($filter)) {
-                            $data   =   is_array($data)?array_map($filter,$data):$filter($data); // 参数过滤
+                            $wrap = null;
+                            $wrap = function($data) use($wrap, $filter) {
+                                return is_array($data)?array_map($wrap, $data):$filter($data);
+                            };
+                            $data = $wrap($data);
                         }
                     }
                 }
