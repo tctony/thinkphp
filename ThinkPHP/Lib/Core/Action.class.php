@@ -341,9 +341,12 @@ abstract class Action {
             $type   =   $args?array_shift($args):'';
         }
         if(empty($type)) $type  =   C('DEFAULT_AJAX_RETURN');
-        if(strtoupper($type)=='JSON') {
-            // 返回JSON数据格式到客户端 包含状态信息
+        if (strtoupper($type) == 'HTML') {
             header('Content-Type:text/html; charset=utf-8');
+            exit($data);
+        } else if(strtoupper($type) == 'JSON') {
+            // 返回JSON数据格式到客户端 包含状态信息
+            header('Content-Type:application/json; charset=utf-8');
             exit(json_encode($data));
         }elseif(strtoupper($type)=='XML'){
             // 返回xml格式数据
@@ -351,7 +354,7 @@ abstract class Action {
             exit(xml_encode($data));
         }elseif(strtoupper($type)=='EVAL'){
             // 返回可执行的js脚本
-            header('Content-Type:text/html; charset=utf-8');
+            header('Content-Type:text/javascript; charset=utf-8');
             exit($data);
         }else{
             // TODO 增加其它格式
